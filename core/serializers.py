@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
+from rest_framework_tracking.models import APIRequestLog
+
 from .models import Like, Post
 
 
@@ -59,7 +61,7 @@ class LikeCreateSerializer(serializers.ModelSerializer):
             defaults={'like': validated_data.get('like')}
         )
         return like
-        
+  
 
 class LikeListSerializer(serializers.ModelSerializer):
     """Post list serializer"""
@@ -73,7 +75,11 @@ class LikeListSerializer(serializers.ModelSerializer):
 
 class UserActivitySerializer(serializers.ModelSerializer):
     """User activity serializer"""
+    last_request = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('username', 'last_login')
+        fields = ('username', 'last_login', 'last_request')
+
+    def get_last_request(self, instance):
+        return APIRequestLog.objects.filter(user=instance).last().requested_at.strftime('%Y-%m-%d %H:%M:%S')

@@ -8,6 +8,8 @@ from rest_framework.generics import (CreateAPIView, GenericAPIView,
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from rest_framework_tracking import mixins
+
 from .models import Like, Post
 from .serializers import (LikeCreateSerializer, LikeListSerializer,
                           PostCreateSerializer, PostDetailSerializer,
@@ -31,19 +33,12 @@ class PostDetailView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class PostCreateView(CreateAPIView):
+class PostCreateView(mixins.LoggingMixin, CreateAPIView):
     serializer_class = PostCreateSerializer
     permission_classes = [IsAuthenticated]
 
 
-class UserActivityView(RetrieveAPIView):
-    """User activity"""
-    queryset = User.objects.all()
-    serializer_class = UserActivitySerializer
-    permission_classes = [IsAuthenticated]
-
-
-class LikeCreateView(CreateAPIView):
+class LikeCreateView(mixins.LoggingMixin, CreateAPIView):
     serializer_class = LikeCreateSerializer
     permission_classes = [IsAuthenticated]
 
@@ -51,7 +46,7 @@ class LikeCreateView(CreateAPIView):
         serializer.save()
 
 
-class LikeListView(ListAPIView):
+class LikeListView(mixins.LoggingMixin, ListAPIView):
     """Display list of posts"""
     queryset = Like.objects.all()
     serializer_class = LikeListSerializer
@@ -66,8 +61,9 @@ class DateRangeFilterSet(filters.FilterSet):
         fields = ('date_from', 'date_to')
 
 
-class AnaliticView(GenericAPIView):
+class AnaliticView(mixins.LoggingMixin, GenericAPIView):
     queryset = Like.objects.all()
+    #permission_classes = 
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DateRangeFilterSet
 
@@ -93,3 +89,10 @@ class AnaliticView(GenericAPIView):
             )
 
         return Response(analytics)
+
+
+class UserActivityView(RetrieveAPIView):
+    """User activity"""
+    queryset = User.objects.all()
+    serializer_class = UserActivitySerializer
+    #permission_classes = [IsAuthenticated]

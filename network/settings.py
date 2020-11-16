@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     'drf_yasg',
+    'rest_framework_tracking',
 
     'core',
 ]
@@ -141,6 +142,7 @@ REST_FRAMEWORK = {
 }
 
 DATE_INPUT_FORMATS = ['%Y-%m-%d']
+DATETIME_FORMATS = ['%Y-%m-%d']
 
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
