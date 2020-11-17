@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django_filters import rest_framework as filters
 from rest_framework.generics import (CreateAPIView, GenericAPIView,
                                      ListAPIView, RetrieveAPIView)
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from rest_framework_tracking import mixins
@@ -23,19 +23,19 @@ class PostListView(ListAPIView):
     """Display list of posts"""
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class PostDetailView(RetrieveAPIView):
     """Display detail post"""
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class PostCreateView(mixins.LoggingMixin, CreateAPIView):
     serializer_class = PostCreateSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
 
 class LikeCreateView(mixins.LoggingMixin, CreateAPIView):
@@ -95,4 +95,4 @@ class UserActivityView(RetrieveAPIView):
     """User activity"""
     queryset = User.objects.all()
     serializer_class = UserActivitySerializer
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
