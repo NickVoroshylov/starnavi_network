@@ -1,4 +1,5 @@
 import os
+import sys
 import requests
 import json
 import random
@@ -6,7 +7,8 @@ import random
 import django
 from django.http import JsonResponse
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "network.settings")
+sys.path.append('../..')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'network.settings')
 django.setup()
 
 from django.contrib.auth.models import User
