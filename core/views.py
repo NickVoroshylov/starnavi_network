@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django_filters import rest_framework as filters
 from rest_framework.generics import (CreateAPIView, GenericAPIView,
                                      ListAPIView, RetrieveAPIView)
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from rest_framework_tracking import mixins
@@ -34,13 +34,15 @@ class PostDetailView(RetrieveAPIView):
 
 
 class PostCreateView(mixins.LoggingMixin, CreateAPIView):
+    """Post creating"""
     serializer_class = PostCreateSerializer
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class LikeCreateView(mixins.LoggingMixin, CreateAPIView):
+    """Like creating"""
     serializer_class = LikeCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save()
@@ -50,6 +52,7 @@ class LikeListView(mixins.LoggingMixin, ListAPIView):
     """Display list of posts"""
     queryset = Like.objects.all()
     serializer_class = LikeListSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class DateRangeFilterSet(filters.FilterSet):
@@ -63,7 +66,7 @@ class DateRangeFilterSet(filters.FilterSet):
 
 class AnaliticView(mixins.LoggingMixin, GenericAPIView):
     queryset = Like.objects.all()
-    #permission_classes = 
+    permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DateRangeFilterSet
 
@@ -71,7 +74,7 @@ class AnaliticView(mixins.LoggingMixin, GenericAPIView):
         queryset = self.get_queryset()
         filtered_queryset = self.filter_queryset(queryset)
 
-        # Queryset needs to be ordered by date for groupby to work correctly
+        # Queryset needs to ordered by date for groupby to work correctly
         ordered_queryset = filtered_queryset.order_by('date')
         likes_by_date = groupby(ordered_queryset,
                                 lambda like: like.date.strftime("%Y-%m-%d"))
@@ -95,4 +98,4 @@ class UserActivityView(RetrieveAPIView):
     """User activity"""
     queryset = User.objects.all()
     serializer_class = UserActivitySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]

@@ -11,7 +11,6 @@ class PostListSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(slug_field='username', read_only=True)
     likes_count = serializers.SerializerMethodField()
     dislikes_count = serializers.SerializerMethodField()
-    # total = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -19,15 +18,9 @@ class PostListSerializer(serializers.ModelSerializer):
 
     def get_likes_count(self, instance):
         return Like.objects.filter(post=instance, like='like').count()
-        
+
     def get_dislikes_count(self, instance):
         return Like.objects.filter(post=instance, like='dislike').count()
-        
-    # def get_total(self, instance):
-    #     likes_f = Like.objects.filter(post=instance, like='like').count()
-    #     dislikes_f = Like.objects.filter(post=instance, like='dislike').count()
-    #     return {"likes": likes_f, 'dislikes': dislikes_f}
-
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
@@ -61,7 +54,7 @@ class LikeCreateSerializer(serializers.ModelSerializer):
             defaults={'like': validated_data.get('like')}
         )
         return like
-  
+
 
 class LikeListSerializer(serializers.ModelSerializer):
     """Post list serializer"""

@@ -14,5 +14,5 @@ class PostAdmin(admin.ModelAdmin):
 class Likedmin(admin.ModelAdmin):
     """Likes"""
     list_display = ('user', 'post', 'like', 'date')
-    list_filter  = ('like',)
+    list_filter = ('like',)
     search_fields = ('post_title', 'author__username')
